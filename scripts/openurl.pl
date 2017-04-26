@@ -149,16 +149,6 @@ sub launch_url ($) {
 sub new_url ($$$$$) {
     my ($server, $channel, $nick, $text, $url) = @_;
     $recent = 1 if ($recent > Irssi::settings_get_int('openurl_max_urls'));
-    # Check for existance of URL
-    my $i = 1;
-    foreach (@urls) {
-	if ($text eq $_->{text} && $channel eq $_->{channel}) {
-	    my $note_id = add_note($server, $channel, $i);
-	    push @{$_->{notes}}, $note_id;
-	    return();
-	}
-	$i++;
-    }
     if (defined $urls[$recent-1]) {
 	del_notes($recent);
     }
