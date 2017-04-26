@@ -105,18 +105,22 @@ sub event_topic_changed {
 
 sub process_line ($$$$) {
     my ($server, $target, $nick, $line) = @_;
-    my $url = get_url($line);
-    if ($url) {
-	my $type = url_type($url);
-	return unless Irssi::settings_get_bool('openurl_watch_'.$type);
-	new_url($server, $target, $nick, $line, $url);
+    my @parsed_urls = get_url($line);
+    if (@parsed_urls) {
+	foreach (@parsed_urls) {
+		my $url = $_;
+		my $type = url_type($url);
+		next unless Irssi::settings_get_bool('openurl_watch_'.$type);
+		new_url($server, $target, $nick, $line, $url);
+	}
     }
 }
 
 sub get_url ($) {
     my ($text) = @_;
     foreach (keys %urltypes) {
-	return $1 if ($text =~ /$urltypes{$_}->{regexp}/);
+	my @matches = $text =~ /$urltypes{$_}->{regexp}/g;
+	return @matches if (@matches);
     }
 }
 
