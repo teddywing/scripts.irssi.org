@@ -110,7 +110,7 @@ sub process_line ($$$$) {
 	foreach (@parsed_urls) {
 		my $url = $_;
 		my $type = url_type($url);
-		next unless Irssi::settings_get_bool('openurl_watch_'.$type);
+		next unless $type && Irssi::settings_get_bool('openurl_watch_'.$type);
 		new_url($server, $target, $nick, $line, $url);
 	}
     }
